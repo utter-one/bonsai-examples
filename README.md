@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="./images/bonsai-logo-h.svg" alt="Bonsai" width="420">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./images/bonsai-logo-h-w.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./images/bonsai-logo-h.svg">
+    <img alt="Bonsai" src="./images/bonsai-logo-h.svg" width="420">
+  </picture>
 </p>
 
 # Bonsai Examples
