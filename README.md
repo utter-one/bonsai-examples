@@ -16,13 +16,8 @@ A collection of ready-to-run example projects built with [Bonsai](https://github
 
 An AI sales-qualification assistant that qualifies inbound leads through natural conversation, scores them against a BANT matrix, and books a discovery call on Google Calendar — all without a human in the loop until the call itself.
 
-| | |
+| <img src="./lead-qualifier/screenshots/banner.png" alt="Lead Qualifier screenshot" width="260"> | **[Readme](./lead-qualifier/readme.md)**<br>**[Setup guide](./lead-qualifier/setup.md)**<br>**[Sample web app](./lead-qualifier/sample-webapp)** |
 |---|---|
-| **Readme** | [lead-qualifier/readme.md](./lead-qualifier/readme.md) |
-| **Setup guide** | [lead-qualifier/setup.md](./lead-qualifier/setup.md) |
-| **Bonsai project** | [lead-qualifier/bonsai-project](./lead-qualifier/bonsai-project) |
-| **Make.com scenarios** | [lead-qualifier/make-scenarios](./lead-qualifier/make-scenarios) |
-| **Sample web app** | [lead-qualifier/sample-webapp](./lead-qualifier/sample-webapp) |
 
 ## License
 
