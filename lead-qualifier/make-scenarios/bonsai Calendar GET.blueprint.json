@@ -1,0 +1,468 @@
+{
+    "name": "bonsai Calendar GET",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 3958009,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -84,
+                    "y": -122
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "availability_14_days"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "roundtrip",
+                "variables": [
+                    {
+                        "name": "dateFrom",
+                        "value": "{{formatDate(now; \"YYYY-MM-DDT00:00:00\"; 1.timezone)}}"
+                    },
+                    {
+                        "name": "dateTo",
+                        "value": "{{formatDate(addDays(now; 14); \"YYYY-MM-DDT23:59:59\"; 1.timezone)}}"
+                    },
+                    {
+                        "name": "timezone",
+                        "value": "{{ifempty(1.timezone; \"Europe/Warsaw\")}}"
+                    },
+                    {
+                        "name": "workStart",
+                        "value": "{{ifempty(1.workStart; \"09:00\")}}"
+                    },
+                    {
+                        "name": "workEnd",
+                        "value": "{{ifempty(1.workEnd; \"17:00\")}}"
+                    },
+                    {
+                        "name": "calendarId",
+                        "value": "{{ifempty(1.calendarId; \"primary\")}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 275,
+                    "y": -125
+                },
+                "restore": {
+                    "expect": {
+                        "scope": {
+                            "label": "One cycle"
+                        },
+                        "variables": {
+                            "items": [
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "variables",
+                        "spec": [
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Variable name",
+                                "required": true
+                            },
+                            {
+                                "name": "value",
+                                "type": "any",
+                                "label": "Variable value"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Variables"
+                    },
+                    {
+                        "name": "scope",
+                        "type": "select",
+                        "label": "Variable lifetime",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "roundtrip",
+                                "execution"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "dateFrom",
+                        "type": "any",
+                        "label": "dateFrom"
+                    },
+                    {
+                        "name": "dateTo",
+                        "type": "any",
+                        "label": "dateTo"
+                    },
+                    {
+                        "name": "timezone",
+                        "type": "any",
+                        "label": "timezone"
+                    },
+                    {
+                        "name": "workStart",
+                        "type": "any",
+                        "label": "workStart"
+                    },
+                    {
+                        "name": "workEnd",
+                        "type": "any",
+                        "label": "workEnd"
+                    },
+                    {
+                        "name": "calendarId",
+                        "type": "any",
+                        "label": "calendarId"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "google-calendar:getFreeBusyInformation",
+            "version": 5,
+            "parameters": {
+                "__IMTCONN__": 4921715
+            },
+            "mapper": {
+                "item": [
+                    {
+                        "id": "{{6.calendarId}}"
+                    }
+                ],
+                "timeMax": "{{formatDate(addDays(now; 14); \"YYYY-MM-DDT23:59:59\"; \"Europe/Warsaw\")}}",
+                "timeMin": "{{formatDate(now; \"YYYY-MM-DDT00:00:00\"; \"Europe/Warsaw\")}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 645,
+                    "y": -127
+                },
+                "restore": {
+                    "expect": {
+                        "item": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "id": {
+                                        "mode": "edit"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            },
+                            "label": "My Google connection (dominik@utter.one)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "timeMin",
+                        "time": true,
+                        "type": "date",
+                        "label": "Time Range From",
+                        "required": true
+                    },
+                    {
+                        "name": "timeMax",
+                        "time": true,
+                        "type": "date",
+                        "label": "Time Range To",
+                        "required": true
+                    },
+                    {
+                        "name": "item",
+                        "spec": [
+                            {
+                                "mode": "edit",
+                                "name": "id",
+                                "type": "select",
+                                "label": "Calendar ID",
+                                "dynamic": true,
+                                "options": [],
+                                "required": true
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Calendars",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "result",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "start",
+                                    "type": "date",
+                                    "label": "Start"
+                                },
+                                {
+                                    "name": "end",
+                                    "type": "date",
+                                    "label": "End"
+                                }
+                            ],
+                            "type": "collection"
+                        },
+                        "type": "array",
+                        "label": "Result"
+                    },
+                    {
+                        "name": "kind",
+                        "type": "text",
+                        "label": "Kind"
+                    },
+                    {
+                        "name": "timeMin",
+                        "type": "date",
+                        "label": "Time Range From"
+                    },
+                    {
+                        "name": "timeMax",
+                        "type": "date",
+                        "label": "Time Range To"
+                    },
+                    {
+                        "name": "calendars",
+                        "spec": [],
+                        "type": "collection",
+                        "label": "Calendars"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 10,
+            "module": "builtin:BasicFeeder",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "array": "{{7.result}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 938,
+                    "y": -123
+                },
+                "restore": {
+                    "expect": {
+                        "array": {
+                            "mode": "edit"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "mode": "edit",
+                        "name": "array",
+                        "spec": [],
+                        "type": "array",
+                        "label": "Array"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 11,
+            "module": "util:TextAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 10,
+                "rowSeparator": ""
+            },
+            "mapper": {
+                "value": "- {{formatDate(7.result[10.`__IMTINDEX__`].start; \"DD.MM.YYYY HH:mm\"; \"Europe/Warsaw\")}} - {{formatDate(7.result[10.`__IMTINDEX__`].end; \"HH:mm\"; \"Europe/Warsaw\")}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1238,
+                    "y": -114
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Iterator [10]"
+                        }
+                    },
+                    "parameters": {
+                        "rowSeparator": {
+                            "label": "Empty"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "rowSeparator",
+                        "type": "select",
+                        "label": "Row separator",
+                        "validate": {
+                            "enum": [
+                                "\n",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Text"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 9,
+            "module": "gateway:WebhookRespond",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "body": "\"{{11.text}}\"",
+                "status": "200",
+                "headers": []
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1622,
+                    "y": -114
+                },
+                "restore": {
+                    "expect": {
+                        "headers": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "expect": [
+                    {
+                        "name": "status",
+                        "type": "uinteger",
+                        "label": "Status",
+                        "required": true,
+                        "validate": {
+                            "min": 100
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "type": "any",
+                        "label": "Body"
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key",
+                                "required": true,
+                                "validate": {
+                                    "max": 256
+                                }
+                            },
+                            {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value",
+                                "required": true,
+                                "validate": {
+                                    "max": 4096
+                                }
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Custom headers",
+                        "validate": {
+                            "maxItems": 16
+                        }
+                    }
+                ],
+                "advanced": true
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
